@@ -1,5 +1,5 @@
-import {useEffect} from 'react';
-import { useSnake  } from '../App/Hooks/useSnake';
+import {useEffect, useLayoutEffect} from 'react';
+import { Snake, useSnake  } from '../App/Hooks/useSnake';
 import Cell from './Cell';
 interface Props {
     snake : object[]
@@ -15,10 +15,24 @@ export function getCoordinates(sizeX : number, sizeY : number) {
     
     return grid;
 }
+function snakeNavigator(snake : Snake) {
+    return (ev : KeyboardEvent) => {
+        if(ev.key === 'a') {
+            snake.direct('x', -1);
+        }else if(ev.key === 'd') {
+            snake.direct('x', 1);
+        }else if(ev.key === 'w') {
+            snake.direct('y', 1);
+        }else if(ev.key === 's') {
+            snake.direct('y', -1);
+        }
+    }
+}
 export default function Grid(props : Props) {
     const snake = useSnake();
-    useEffect(() => {
-        // snake.move()
+    useLayoutEffect(() => {
+        window.onkeydown = snakeNavigator(snake)
+        snake.move()
     }, [snake])
     const grid = getCoordinates(20, 20).map((coordinate, i) => {
         return (
@@ -29,7 +43,7 @@ export default function Grid(props : Props) {
         )
     });
     return (
-        <div data-testid = 'grid' className="Grid">
+        <div  data-testid = 'grid' className="Grid">
             {grid}
         </div>
     )
