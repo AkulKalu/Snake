@@ -15,7 +15,7 @@ export function getCoordinates(sizeX : number, sizeY : number) {
     
     return grid;
 }
-function snakeNavigator(snake : Snake) {
+function navigateSnake(snake : Snake) {
     return (ev : KeyboardEvent) => {
         if(ev.key === 'a') {
             snake.direct('x', -1);
@@ -30,15 +30,17 @@ function snakeNavigator(snake : Snake) {
 }
 export default function Grid(props : Props) {
     const snake = useSnake();
+    console.log('ss');
+    
     useLayoutEffect(() => {
-        window.onkeydown = snakeNavigator(snake)
+        window.onkeydown = navigateSnake(snake)
         snake.move()
     }, [snake])
     const grid = getCoordinates(20, 20).map((coordinate, i) => {
         return (
             <Cell 
                 key = {'c' + i}
-                draw = {snake.draw(coordinate)}
+                snake = {snake}
                 coordinate = {coordinate}/>
         )
     });
